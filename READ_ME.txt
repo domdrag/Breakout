@@ -1,4 +1,4 @@
-- ZA TESTIRANJE LEVELA => promijeniti varijablu članicu mLevel u [wanted_level-1].
+- ZA TESTIRANJE LEVELA => promijeniti varijablu članicu mLevel u [wanted_level-1] u zaglavlju game.h 
 - .EXE FILE => x64/Release ili x64/Debug
 
 [POSSIBLE_BUGS]
