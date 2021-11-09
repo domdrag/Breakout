@@ -59,7 +59,7 @@ private:
 	SoundHolder mSoundHolder;
 	Parser mParser;
 
-	std::vector<std::unique_ptr<Brick> > mBricks;
+	std::vector<Brick> mBricks;
 	std::vector<std::unique_ptr<sf::Sound> > mSounds;
 	Player mPlayer;
 	Pillar mPillarLeft;

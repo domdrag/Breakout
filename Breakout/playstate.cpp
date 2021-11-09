@@ -56,8 +56,8 @@ void PlayState::setPositions() {
         for (int idy = 0; idy < mColumns; ++idy) {
             coordX = firstBrickX + idy * (brickWidth + mColumnsSpace);
             coordY = firstBrickY + idx * (brickHeight + mRowsSpace);
-            mBricks[idx * mColumns + idy]->setPosition(coordX, coordY);
-            mMaxScore += mBricks[idx * mColumns + idy]->mBreakScore;
+            mBricks[idx * mColumns + idy].setPosition(coordX, coordY);
+            mMaxScore += mBricks[idx * mColumns + idy].mBreakScore;
         }
     }
 
@@ -93,7 +93,7 @@ PlayState::PlayState(Game* pGame, int level, int score) :
     // nakon toga nam vise ne trebaju
     mBricks.erase(std::remove_if(mBricks.begin(), mBricks.end(),
         [](decltype(*mBricks.begin()) pBrick) {
-            if (!pBrick->mHitPoints)
+            if (!pBrick.mHitPoints)
                 return true;
             else
                 return false;
@@ -155,8 +155,8 @@ void PlayState::update(sf::Time dt) {
     // kolizija ball-brick
     auto it = std::find_if(mBricks.begin(), mBricks.end(),
         [&](decltype(*mBricks.begin()) pBrick) {
-            float brickX = pBrick->getPosition().x;
-            float brickY = pBrick->getPosition().y;
+            float brickX = pBrick.getPosition().x;
+            float brickY = pBrick.getPosition().y;
             HitPlace hitPlace = mBall.checkCollision(brickX, brickY, brickWidth, brickHeight);
             switch (hitPlace) {
                 case HitPlace::noHit:
@@ -190,7 +190,7 @@ void PlayState::update(sf::Time dt) {
 
     // rjesavanje kolizije ball-brick
     if (it != mBricks.end()) {
-        Brick& brick = **it;
+        Brick& brick = *it;
  
         std::size_t soundSize = mSounds.size();
         mSounds.resize(soundSize + 1);
@@ -294,7 +294,7 @@ void PlayState::render() {
     mWindow->draw(mPillarTop);
 
     for (auto& brick : mBricks)
-        mWindow->draw(*brick);
+        mWindow->draw(brick);
 
     mWindow->draw(mBall);
 

@@ -145,31 +145,31 @@ void Parser::parseBricks(PlayState* state){
     for(const char& letter : letters){
         switch (letter) {
             case 'S':
-                mBricks.emplace_back(new Brick(mTextureHolder.getTexture(Textures::easyBrick),
+                mBricks.emplace_back(mTextureHolder.getTexture(Textures::easyBrick),
                     mBrickFeatures[Bricks::easy][Feature::hitPoints],
-                    mBrickFeatures[Bricks::easy][Feature::breakScore], Textures::easyBrick, Sounds::easyHit));
+                    mBrickFeatures[Bricks::easy][Feature::breakScore], Textures::easyBrick, Sounds::easyHit);
                 break;
 
             case 'M':
-                mBricks.emplace_back(new Brick(mTextureHolder.getTexture(Textures::mediumBrick1),
+                mBricks.emplace_back(mTextureHolder.getTexture(Textures::mediumBrick1),
                     mBrickFeatures[Bricks::medium][Feature::hitPoints],
-                    mBrickFeatures[Bricks::medium][Feature::breakScore], Textures::mediumBrick1, Sounds::mediumHit));
+                    mBrickFeatures[Bricks::medium][Feature::breakScore], Textures::mediumBrick1, Sounds::mediumHit);
                 break;
 
             case 'H':
-                mBricks.emplace_back(new Brick(mTextureHolder.getTexture(Textures::hardBrick1),
+                mBricks.emplace_back(mTextureHolder.getTexture(Textures::hardBrick1),
                     mBrickFeatures[Bricks::hard][Feature::hitPoints],
-                    mBrickFeatures[Bricks::hard][Feature::breakScore], Textures::hardBrick1, Sounds::hardHit));
+                    mBrickFeatures[Bricks::hard][Feature::breakScore], Textures::hardBrick1, Sounds::hardHit);
                 break;
 
             case 'I':
-                mBricks.emplace_back(new Brick(mTextureHolder.getTexture(Textures::impenetrableBrick),
+                mBricks.emplace_back(mTextureHolder.getTexture(Textures::impenetrableBrick),
                     mBrickFeatures[Bricks::impenetrable][Feature::hitPoints],
                     mBrickFeatures[Bricks::impenetrable][Feature::breakScore], 
-                    Textures::impenetrableBrick, Sounds::impenetrableHit));
+                    Textures::impenetrableBrick, Sounds::impenetrableHit);
                 break;
             case '_':
-                mBricks.emplace_back(new Brick());
+                mBricks.emplace_back();
                 break;
 
         }
