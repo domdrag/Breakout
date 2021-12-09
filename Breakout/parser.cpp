@@ -6,6 +6,7 @@
 #include <string>
 #include <cstdlib>
 
+
 void Parser::parseSounds(SoundHolder& soundHolder) {
     tinyxml2::XMLElement* pXML = mDocument.FirstChildElement();
     auto& mSounds = soundHolder.mSounds;
