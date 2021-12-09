@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <random>
 
 enum HitPlace : uint8_t {
     noHit, bottom, right, top, left,
@@ -61,9 +62,15 @@ public:
     void resetDirection(bool coordX, bool coordY);
     void resetAbsoluteDirection(bool coordX, bool coordY);
     void setVelocity(float coordX, float coordY);
+    void smallRandomShift();
+
     sf::Vector2f getVelocity();
 private:
     sf::Vector2f mVelocity;
+
+    std::random_device mDevice;
+    std::default_random_engine mEngine;
+    std::uniform_int_distribution<int> mRandomGenerator;
 };
 
 class Pillar : public Entity {

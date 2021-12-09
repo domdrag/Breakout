@@ -9,11 +9,16 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <vector>
+#include <deque>
 
 namespace {
 	enum Font {
 		sizeSmall = 35,
 		sizeBig = 100
+	};
+	enum Hit {
+		begin, brick, player, leftPillar,
+		rightPillar, topPillar
 	};
 
 	// na ekran se pocne prikazivati countDownBegin - 1
@@ -47,20 +52,20 @@ public:
 
 	void setTextures();
 	void setPositions();
+	void playSound(int sound);
 
 private:
 	sf::RenderWindow* mWindow;
 	sf::Sprite mBackgroundSprite;
 	sf::Font mFont;
 	sf::Clock mClock; // za countdown
-	sf::Time mDtFixed;
 
 	TextureHolder mTextureHolder;
 	SoundHolder mSoundHolder;
 	Parser mParser;
 
 	std::vector<Brick> mBricks;
-	std::vector<std::unique_ptr<sf::Sound> > mSounds;
+	std::deque<sf::Sound> mSounds;
 	Player mPlayer;
 	Pillar mPillarLeft;
 	Pillar mPillarRight;
@@ -73,6 +78,7 @@ private:
 
 	uint8_t mCountDownValue = countDownBegin;
 	uint8_t mLives = livesBegin;
+	Hit mLastHit = begin;
 
 	std::unique_ptr<sf::Text> mLivesText;
 	std::unique_ptr<sf::Text> mScoreText;

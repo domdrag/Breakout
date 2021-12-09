@@ -31,7 +31,8 @@ float Entity::getHeight() {
     return lb.height;
 }
 
-Brick::Brick() : mHitPoints(0), mBreakScore(0), mSoundID(0), mTextureID(0)
+Brick::Brick() : 
+    mHitPoints(0), mBreakScore(0), mSoundID(0), mTextureID(0)
 {}
 
 Brick::Brick(const sf::Texture& texture, int hit, int score, int textureID, int soundHitID) :
@@ -108,7 +109,12 @@ HitPlace Ball::checkCollision(float rect_x, float rect_y, float rect_width, floa
         return HitPlace::noHit;
 }
 
-Ball::Ball(float velocityX, float velocityY) {
+void Ball::smallRandomShift() {
+    mVelocity.x += mRandomGenerator(mEngine);
+}
+
+Ball::Ball(float velocityX, float velocityY) : 
+    mEngine(mDevice()), mRandomGenerator(-5, 5) {
     mVelocity.x = velocityX;
     mVelocity.y = velocityY;
 }

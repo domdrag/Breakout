@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
+
 Game::Game() :
     mWindow(sf::VideoMode(Window::width, Window::height), "Breakout"),
     mState(GameState::Welcome), mStates(statesNum)

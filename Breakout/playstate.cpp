@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include <string>
+#include <thread>
 
 void PlayState::setTextures() {
     mPillarLeft.setTexture(mTextureHolder.getTexture(Textures::pillar));
@@ -86,7 +87,6 @@ PlayState::PlayState(Game* pGame, int level, int score) :
 
     mCountDownText->setFillColor(sf::Color::Red);
     mWindow->setMouseCursorVisible(false);
-    mDtFixed = sf::seconds(0.2f / 60.0f);
     mFont.loadFromFile("data/fonts/Halo3.ttf");
 
     // prazne cigle su samo bile potrebne pri odredivanju pozicija
@@ -106,6 +106,13 @@ void PlayState::handleEvents(sf::Event event) {
             mWindow->close();
             break;
     }
+}
+
+void PlayState::playSound(int sound) {
+    std::size_t soundSize = mSounds.size();
+    mSounds.resize(soundSize + 1);
+    mSounds.emplace_back(mSoundHolder.getSound(static_cast<Sounds::ID>(sound)));
+    mSounds.back().play();
 }
 
 void PlayState::update(sf::Time dt) {
@@ -143,14 +150,11 @@ void PlayState::update(sf::Time dt) {
         return;
 
     // ako je zvuk prestao tada ga brisemo iz spremnika
-    mSounds.erase(std::remove_if(mSounds.begin(), mSounds.end(),
-        [](decltype(*mSounds.begin())& sound) {
-            if (sound->getStatus() == sf::Sound::Stopped)
-                return true;
-            else
-                return false;
-        }), mSounds.end());
-
+    if(!mSounds.empty()){
+        if (mSounds.front().getStatus() == sf::Sound::Stopped) {
+            mSounds.pop_front();
+        }
+    }
  
     // kolizija ball-brick
     auto it = std::find_if(mBricks.begin(), mBricks.end(),
@@ -191,56 +195,75 @@ void PlayState::update(sf::Time dt) {
     // rjesavanje kolizije ball-brick
     if (it != mBricks.end()) {
         Brick& brick = *it;
- 
-        std::size_t soundSize = mSounds.size();
-        mSounds.resize(soundSize + 1);
 
         brick.decreaseHitPoints();
         if (brick.isDead()) {
-            mSounds[soundSize].reset(new sf::Sound(mSoundHolder.getSound(static_cast<Sounds::ID>(brick.mSoundID + 1))));
+            playSound(brick.mSoundID + 1);
             mScore += brick.mBreakScore;
             mScoreText->setString("Score: " + std::to_string(mScore));
             mBricks.erase(it);
         }
         else {
-            mSounds[soundSize].reset(new sf::Sound(mSoundHolder.getSound(static_cast<Sounds::ID>(brick.mSoundID))));
+            playSound(brick.mSoundID);
             if(brick.canBeBroken())
                 brick.setTexture(mTextureHolder.getTexture(static_cast<Textures::ID>(++brick.mTextureID)));
         }
-
-        mSounds[soundSize]->play();
+        mBall.smallRandomShift();
+        mLastHit = Hit::brick;
     }
 
     // kolizija ball-pillar
-    bool rightPillarCol = mBall.checkCollision(mPillarLeft.getPosition().x, mPillarLeft.getPosition().y, mPillarLeft.getWidth(), mPillarLeft.getHeight());
-    bool leftPillarCol = mBall.checkCollision(mPillarRight.getPosition().x, mPillarRight.getPosition().y, mPillarRight.getWidth(), mPillarRight.getHeight());
+    bool leftPillarCol = mBall.checkCollision(mPillarLeft.getPosition().x, mPillarLeft.getPosition().y, mPillarLeft.getWidth(), mPillarLeft.getHeight());
+    bool rightPillarCol = mBall.checkCollision(mPillarRight.getPosition().x, mPillarRight.getPosition().y, mPillarRight.getWidth(), mPillarRight.getHeight());
     bool topPillarCol = mBall.checkCollision(mPillarTop.getPosition().x, mPillarTop.getPosition().y, mPillarTop.getWidth(), mPillarTop.getHeight());
 
     // rjesavanje kolizije ball-pillar
-    if (leftPillarCol || rightPillarCol) {
-        std::size_t soundSize = mSounds.size();
-        mSounds.resize(soundSize + 1);
-        mSounds[soundSize].reset(new sf::Sound(mSoundHolder.getSound(Sounds::pillarBounce)));
-        mSounds[soundSize]->play();
-
-        mBall.resetDirection(true, false);
+    if (leftPillarCol) {
+        // rjesavanje previse sound-ova
+        if (mLastHit == Hit::leftPillar) {
+            mBall.update(dt);
+            return;
+        }
+        playSound(Sounds::pillarBounce);
+        if(mBall.getVelocity().y < 0)
+            mBall.resetAbsoluteDirection(true, false);
+        else
+            mBall.resetAbsoluteDirection(true, true);
+        mLastHit = Hit::leftPillar;
     }
 
-    if (topPillarCol) {
-        std::size_t soundSize = mSounds.size();
-        mSounds.resize(soundSize + 1);
-        mSounds[soundSize].reset(new sf::Sound(mSoundHolder.getSound(Sounds::pillarBounce)));
-        mSounds[soundSize]->play();
+    if (rightPillarCol) {
+        // rjesavanje previse sound-ova
+        if (mLastHit == Hit::rightPillar) {
+            mBall.update(dt);
+            return;
+        }
+        playSound(Sounds::pillarBounce);
+        if (mBall.getVelocity().y < 0) 
+            mBall.resetAbsoluteDirection(false, false);
+        
+        else 
+            mBall.resetAbsoluteDirection(false, true);
+        
+        mLastHit = Hit::rightPillar;
+    }
 
+
+    if (topPillarCol) {
+        playSound(Sounds::pillarBounce);
         mBall.resetDirection(false, true);
+        mLastHit = Hit::topPillar;
     }
 
     // rjesavanje kolizije ball-player
     if (mBall.checkCollision(mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getWidth(), mPlayer.getHeight())) {
-        std::size_t soundSize = mSounds.size();
-        mSounds.resize(soundSize + 1);
-        mSounds[soundSize].reset(new sf::Sound(mSoundHolder.getSound(Sounds::playerBounce)));
-        mSounds[soundSize]->play();
+        // rjesavanje previse sound-ova
+        if (mLastHit == Hit::player) {
+            mBall.update(dt);
+            return;
+        }
+
+        playSound(Sounds::playerBounce);
 
         float diff = mPlayer.getPosition().x - mBall.getPosition().x;
         float maxDiff = mPlayer.getWidth() / 2;
@@ -249,6 +272,10 @@ void PlayState::update(sf::Time dt) {
         float coordY = -std::sqrt(std::pow(ballSpeed, 2) - std::pow(coordX, 2));
 
         mBall.setVelocity(coordX, coordY);
+
+        mLastHit = Hit::player;
+
+
     }
 
     // level je uspjesno zavrsen
@@ -277,9 +304,10 @@ void PlayState::update(sf::Time dt) {
         mCountDownText->setOrigin(lb.width / 2, lb.height / 2);
         mCountDownText->setPosition(Window::width / 2, Window::height / 2);
         mpGame->setPauseState(mScore, mLives, false, false);
+        mLastHit = Hit::begin;
+        return;
     }
 
-    // update lopte
     mBall.update(dt);
 
 }
