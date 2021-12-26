@@ -16,4 +16,4 @@
 
 = cigle više ne spremamo u vektor preko pokazivača jer sam shvatio da koristim emplace_back pa nema potrebe za CCtor-om
 = zvukove sada spremamo u deque jer se veličina spremnika stalno mijenja, a ne trebam prolaziti po spremniku već brišem front() čim
-	zvuk završi
+	zvuk završi 
