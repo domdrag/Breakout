@@ -19,12 +19,12 @@ Level 1:
 
 Level 2:
 
-![level2 screen](./doc/level2.png)
+![level2 screen](./Breakout/doc/level2.png)
 
 Level 3:
 
-![level3 screen](./doc/level2.png)
+![level3 screen](./Breakout/doc/level2.png)
 
 Kada igra završi ispisuje se završni rezultat.
 
-![end screen](./doc/game_over.png)
+![end screen](./Breakout/doc/game_over.png)
