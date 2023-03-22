@@ -23,7 +23,7 @@ Level 2:
 
 Level 3:
 
-![level3 screen](./Breakout/doc/level2.png)
+![level3 screen](./Breakout/doc/level3.png)
 
 Kada igra završi ispisuje se završni rezultat.
 
