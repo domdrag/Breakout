@@ -35,7 +35,7 @@ private:
 	GameState::State mState;
 
 	bool mNewLevel = true;
-	int mLevel = 0;
+	int mLevel = 2;
 	int mScore = 0;
 };
 
