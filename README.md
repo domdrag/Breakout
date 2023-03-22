@@ -1,8 +1,8 @@
 # Breakout
 
-Jednostavna kopija stare igre Atari Breakout
+Jednostavna kopija stare igre Atari Breakout.
 
-![game screen](./Breakout/doc/start_screen.png)
+![start screen](./Breakout/doc/start_screen.png)
 
 Nakon što se pritisne ENTER počinje igra.
 Igrač dobiva ekran igre:
@@ -15,16 +15,16 @@ tako da loptica ne padne ispod ekrana, a ujedno i pogoditi sve cigle kako bi igr
 
 Level 1:
 
-![game screen](./Breakout/doc/level1.png)
+![level1 screen](./Breakout/doc/level1.png)
 
 Level 2:
 
-![score screen](./doc/level2.png)
+![level2 screen](./doc/level2.png)
 
 Level 3:
 
-![score screen](./doc/level2.png)
+![level3 screen](./doc/level2.png)
 
 Kada igra završi ispisuje se završni rezultat.
 
-![score screen](./doc/game_over.png)
+![end screen](./doc/game_over.png)
